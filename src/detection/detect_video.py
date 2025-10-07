@@ -5,7 +5,7 @@ from ultralytics import YOLO
 from detection.lane_detection import draw_lane_lines
 from detection.violation_check import is_vehicle_in_wrong_lane
 
-def detect_video(video_path, model_path="models/best.pt", output="output/results/out.mp4", progress_callback=None):
+def detect_video(video_path, model_path="models/yolo11n.pt", output="output/results/out.mp4", progress_callback=None):
     base_dir = os.path.dirname(os.path.abspath(__file__))
     output_path = os.path.normpath(os.path.join(base_dir, "..", "..", output))
     output_dir = os.path.dirname(output_path)
@@ -100,5 +100,13 @@ def detect_video(video_path, model_path="models/best.pt", output="output/results
         print(f"[INFO] Log vi phạm lưu tại: {violations_csv}")
     print(f"[INFO] Kết quả lưu tại: {output_path}")
 
+def detect_frame(frame, model_path):
+    model = YOLO(model_path)
+    results = model(frame)
+    # Nếu bạn có hàm vẽ lane lines, hãy dùng:
+    # from detection.lane_detection import draw_lane_lines
+    # frame = draw_lane_lines(frame, results)
+    return results[0].plot()  # Trả về frame đã nhận diện (vẽ bounding box)
+
 if __name__ == "__main__":
-    detect_video("data/raw/sample_video.mp4", "models/best.pt")
+    detect_video("data/raw/sample_video.mp4", "models/yolo11n.pt")
